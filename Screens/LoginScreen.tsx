@@ -11,13 +11,16 @@ import {
     View,
 } from "react-native";
 import {Image} from "expo-image";
-import {Link} from "expo-router";
-import {useColorScheme} from "@/hooks/use-color-scheme";
 
-export default function RegistrationScreen() {
+
+import {RootStackParamList} from "@/types/navigation.types";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<RootStackParamList, "RegistrationScreen" | "LoginScreen">;
+export default function RegistrationScreen({navigation}: Props) {
     const [showPassword, setShowPassword] = useState(false);
     const [focusedInput, setFocusedInput] = useState<string | null>(null);
-    const colorScheme = useColorScheme();
+
     const [form, setForm] = useState({
         username: "",
         email: "",
@@ -30,7 +33,7 @@ export default function RegistrationScreen() {
 
     const handleRegister = () => {
         console.log("User data:", form);
-        // TODO: API call to register user
+
     };
 
     return (
@@ -67,7 +70,7 @@ export default function RegistrationScreen() {
                             onChangeText={(text) => handleChange("email", text)}
                             onFocus={() => setFocusedInput("email")}
                             onBlur={() => setFocusedInput(null)}
-                            placeholderTextColor={colorScheme === "dark" ? "#BDBDBD" : "#888"}
+                            placeholderTextColor={"#BDBDBD"}
                             keyboardType="email-address"
                         />
 
@@ -83,7 +86,8 @@ export default function RegistrationScreen() {
                                 onChangeText={(text) => handleChange("password", text)}
                                 onFocus={() => setFocusedInput("password")}
                                 onBlur={() => setFocusedInput(null)}
-                                placeholderTextColor={colorScheme === "dark" ? "#BDBDBD" : "#888"}
+                                placeholderTextColor={"#BDBDBD"}
+                                maxLength={12}
                             />
                             <TouchableOpacity
                                 style={styles.showButton}
@@ -94,18 +98,15 @@ export default function RegistrationScreen() {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-
-
                         <TouchableOpacity style={styles.button} onPress={handleRegister}>
                             <Text style={styles.buttonText}>Увійти</Text>
                         </TouchableOpacity>
 
-                        <Text style={styles.footerText}>
-                            Немає акаунту?{" "}
-                            <Link href="/" style={styles.link}>
-                                Зареєструватися
-                            </Link>
-                        </Text>
+                        <TouchableOpacity style={styles.linkContainer}
+                                          onPress={() => navigation.navigate("RegistrationScreen")}>
+                            <Text style={styles.link}>Немає акаунту?{" "}</Text>
+                            <Text style={styles.linkup}>Зареєструватися</Text>
+                        </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -219,14 +220,28 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
     },
+
+    linkContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
+        marginTop: 16,
+    },
     footerText: {
         marginTop: 16,
         color: "#1B4373",
         fontWeight: "400",
     },
+    linkup: {
+        color: "#1B4373",
+        fontSize: 16,
+        fontWeight: "400",
+        textDecorationLine: "underline",
+    },
     link: {
         color: "#1B4373",
         fontWeight: "400",
-        textDecorationLine: "underline",
+        fontSize: 16,
+
     },
 });

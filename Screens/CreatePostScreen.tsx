@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
-    View,
+    Image,
+    Keyboard,
+    ScrollView,
+    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    StyleSheet,
-    Image,
-
-    ScrollView,
+    TouchableWithoutFeedback,
+    View
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {Ionicons} from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 export default function CreatePostScreen() {
@@ -25,9 +26,9 @@ export default function CreatePostScreen() {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.8,
+            mediaTypes: "images",
         });
+
 
         if (!result.canceled) {
             setPhoto(result.assets[0].uri);
@@ -35,7 +36,7 @@ export default function CreatePostScreen() {
     };
 
     const handlePublish = () => {
-        console.log({ photo, title, location });
+        console.log({photo, title, location});
         // TODO: Надіслати дані на сервер
     };
 
@@ -48,68 +49,71 @@ export default function CreatePostScreen() {
     const isButtonDisabled = !photo || !title || !location;
 
     return (
-        <View style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.container}>
-                {/* Header */}
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color="#212121" />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.safeArea}>
+                <ScrollView contentContainerStyle={styles.container}>
+                    {/* Header */}
+                    <View style={styles.header}>
+                        <TouchableOpacity style={styles.backButton}>
+                            <Ionicons name="arrow-back" size={24} color="#212121"/>
+                        </TouchableOpacity>
+                        <Text style={styles.headerTitle}>Створити публікацію</Text>
+                        <View style={{width: 24}}/>
+                    </View>
+
+                    {/* Image upload */}
+                    <TouchableOpacity style={styles.imageBox} onPress={handlePickImage}>
+                        {photo ? (
+                            <Image source={{uri: photo}} style={styles.image}/>
+                        ) : (
+                            <View style={styles.iconBox}><Image
+                                source={require('@/assets/icons/camera_alt-black.png')}/></View>
+                        )}
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Створити публікацію</Text>
-                    <View style={{ width: 24 }} />
-                </View>
 
-                {/* Image upload */}
-                <TouchableOpacity style={styles.imageBox} onPress={handlePickImage}>
-                    {photo ? (
-                        <Image source={{ uri: photo }} style={styles.image} />
-                    ) : (
-                            <View style={styles.iconBox}><Image source={require('@/assets/icons/camera_alt-black.png')}   /></View>
-                    )}
-                </TouchableOpacity>
+                    <Text style={styles.uploadText}>Завантажте фото</Text>
 
-                <Text style={styles.uploadText}>Завантажте фото</Text>
-
-                {/* Title */}
-                <TextInput
-                    style={[styles.input, {marginBottom: 16}]}
-
-                    placeholder="Назва..."
-                    placeholderTextColor="#BDBDBD"
-                    value={title}
-                    onChangeText={setTitle}
-                />
-
-                {/* Location */}
-                <View style={styles.locationRow}>
-                    <Image
-                        style={styles.locationIcon}
-                        source={require( "@/assets/icons/map-pin.png")}
-                    />
+                    {/* Title */}
                     <TextInput
-                        style={[styles.input, { flex: 1, borderBottomWidth: 0 }]}
-                        placeholder="Місцевість..."
+                        style={[styles.input, {marginBottom: 16}]}
+
+                        placeholder="Назва..."
                         placeholderTextColor="#BDBDBD"
-                        value={location}
-                        onChangeText={setLocation}
+                        value={title}
+                        onChangeText={setTitle}
                     />
-                </View>
 
-                {/* Publish Button */}
-                <TouchableOpacity
-                    style={[styles.button, isButtonDisabled && styles.buttonDisabled]}
-                    onPress={handlePublish}
-                    disabled={isButtonDisabled}
-                >
-                    <Text style={styles.buttonText}>Опублікувати</Text>
-                </TouchableOpacity>
+                    {/* Location */}
+                    <View style={styles.locationRow}>
+                        <Image
+                            style={styles.locationIcon}
+                            source={require("@/assets/icons/map-pin.png")}
+                        />
+                        <TextInput
+                            style={[styles.input, {flex: 1, borderBottomWidth: 0}]}
+                            placeholder="Місцевість..."
+                            placeholderTextColor="#BDBDBD"
+                            value={location}
+                            onChangeText={setLocation}
+                        />
+                    </View>
 
-                {/* Delete */}
-                <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-                    <Ionicons name="trash-outline" size={24} color="#BDBDBD" />
-                </TouchableOpacity>
-            </ScrollView>
-        </View>
+                    {/* Publish Button */}
+                    <TouchableOpacity
+                        style={[styles.button, isButtonDisabled && styles.buttonDisabled]}
+                        onPress={handlePublish}
+                        disabled={isButtonDisabled}
+                    >
+                        <Text style={styles.buttonText}>Опублікувати</Text>
+                    </TouchableOpacity>
+
+                    {/* Delete */}
+                    <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+                        <Ionicons name="trash-outline" size={24} color="#BDBDBD"/>
+                    </TouchableOpacity>
+                </ScrollView>
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 

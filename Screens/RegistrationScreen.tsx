@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
-    View,
-    TextInput,
-    TouchableOpacity,
-    Text,
-    StyleSheet,
+    Keyboard,
     KeyboardAvoidingView,
     Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
     TouchableWithoutFeedback,
-    Keyboard,
+    View,
 } from "react-native";
-import { Image } from "expo-image";
-import { Link } from "expo-router";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import {Image} from "expo-image";
 
-export default function RegistrationScreen() {
+
+import {RootStackParamList} from "@/types/navigation.types";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<RootStackParamList, "RegistrationScreen" | "LoginScreen">;
+export default function RegistrationScreen({navigation}: Props) {
     const [showPassword, setShowPassword] = useState(false);
     const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
-     const colorScheme = useColorScheme();
+
     type FormState = {
         username: string;
         email: string;
@@ -32,8 +35,9 @@ export default function RegistrationScreen() {
     });
 
     const handleChange = (key: keyof FormState, value: string) => {
-        setForm({ ...form, [key]: value });
-    };;
+        setForm({...form, [key]: value});
+    };
+
 
     const handleRegister = () => {
         console.log("User data:", form);
@@ -67,28 +71,28 @@ export default function RegistrationScreen() {
                         <TextInput
                             style={[
                                 styles.input,
-                                focusedInput === "username" && { borderColor: "#ff6600" }, // активне поле
+                                focusedInput === "username" && {borderColor: "#ff6600"}, // активне поле
                             ]}
                             placeholder="Логін"
                             value={form.username}
                             onChangeText={(text) => handleChange("username", text)}
                             onFocus={() => setFocusedInput("username")}
                             onBlur={() => setFocusedInput(null)}
-                            placeholderTextColor={colorScheme === "dark" ? "#BDBDBD" : "#888"}
+                            placeholderTextColor={"#BDBDBD"}
 
                         />
 
                         <TextInput
                             style={[
                                 styles.input,
-                                focusedInput === "email" && { borderColor: "#ff6600" },
+                                focusedInput === "email" && {borderColor: "#ff6600"},
                             ]}
                             placeholder="Адреса електронної пошти"
                             value={form.email}
                             onChangeText={(text) => handleChange("email", text)}
                             onFocus={() => setFocusedInput("email")}
                             onBlur={() => setFocusedInput(null)}
-                            placeholderTextColor={colorScheme === "dark" ? "#BDBDBD" : "#888"}
+                            placeholderTextColor={"#BDBDBD"}
 
 
                             keyboardType="email-address"
@@ -98,7 +102,7 @@ export default function RegistrationScreen() {
                             <TextInput
                                 style={[
                                     styles.input,
-                                    focusedInput === "password" && { borderColor: "#ff6600" },
+                                    focusedInput === "password" && {borderColor: "#ff6600"},
                                 ]}
                                 placeholder="Пароль"
                                 secureTextEntry={!showPassword}
@@ -106,7 +110,7 @@ export default function RegistrationScreen() {
                                 onChangeText={(text) => handleChange("password", text)}
                                 onFocus={() => setFocusedInput("password")}
                                 onBlur={() => setFocusedInput(null)}
-                                placeholderTextColor={colorScheme === "dark" ? "#BDBDBD" : "#888"}
+                                placeholderTextColor={"#BDBDBD"}
 
 
                             />
@@ -123,13 +127,13 @@ export default function RegistrationScreen() {
                         <TouchableOpacity style={styles.button} onPress={handleRegister}>
                             <Text style={styles.buttonText}>Зареєструватися</Text>
                         </TouchableOpacity>
+                        <View style={styles.containerLink}>
 
-                        <Text style={styles.footerText}>
-                            Вже є акаунт?{" "}
-                            <Link href="/" style={styles.link}>
-                                Увійти
-                            </Link>
-                        </Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                                <Text style={styles.link}>Вже є акаунт?{" "}Увійти</Text>
+                            </TouchableOpacity>
+
+                        </View>
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
     avatarPlus: {
         position: "absolute",
         top: "70%",
-        transform: [{ translateX: 60 }],
+        transform: [{translateX: 60}],
         borderWidth: 1,
         width: 25,
         height: 25,
@@ -216,7 +220,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         right: 15,
         top: "50%",
-        transform: [{ translateY: -15 }],
+        transform: [{translateY: -15}],
     },
     showText: {
         color: "#1B4373",
@@ -235,11 +239,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
     },
-    footerText: {
-        marginTop: 16,
-        color: "#1B4373",
-        fontWeight: "400",
-    },
+    containerLink: {alignItems: "center", justifyContent: "center", marginTop: 16,},
+
     link: {
         color: "#1B4373",
         fontWeight: "400",

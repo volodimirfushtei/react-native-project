@@ -1,12 +1,5 @@
 import React from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    SafeAreaView,
-} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 
 const PostsScreen = () => {
     return (
@@ -15,9 +8,9 @@ const PostsScreen = () => {
             <View style={styles.header}>
                 <Text style={styles.headerText}>Публікації</Text>
                 <TouchableOpacity style={styles.iconLogOut}>
-                <Image
-                    source={require("@/assets/icons/log-out.png")}
-                /></TouchableOpacity>
+                    <Image
+                        source={require("@/assets/icons/log-out.png")}
+                    /></TouchableOpacity>
             </View>
 
             {/* Картка профілю */}
@@ -35,7 +28,7 @@ const PostsScreen = () => {
             {/* Нижня навігаційна панель */}
             <View style={styles.footer}>
                 <TouchableOpacity>
-                    <Image source={require("@/assets/icons/grid.png")} style={styles.iconFooter} />
+                    <Image source={require("@/assets/icons/grid.png")} style={styles.iconFooter}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.addButton}>
@@ -43,7 +36,7 @@ const PostsScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity>
-                    <Image source={require("@/assets/icons/user.png")} style={styles.iconUser} />
+                    <Image source={require("@/assets/icons/user.png")} style={styles.iconUser}/>
                 </TouchableOpacity>
             </View>
         </View>
