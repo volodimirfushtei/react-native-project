@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     link: {
         color: "#1B4373",
         fontWeight: "400",
+        fontSize: 16,
     },
 });
 
