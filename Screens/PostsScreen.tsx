@@ -1,13 +1,30 @@
 import React from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 
-const PostsScreen = () => {
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "@/types/navigation.types";
+
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "CreatePostScreen">;
+type Props = NavigationProps & {
+    navigation: any;
+};
+
+const PostsScreen = ({navigation}: Props) => {
+
+    const logOut = () => {
+
+        (navigation as any).reset({
+            index: 0,
+            routes: [{name: "AuthContainer"}],
+        });
+
+    }
     return (
         <View style={styles.container}>
             {/* Заголовок */}
             <View style={styles.header}>
                 <Text style={styles.headerText}>Публікації</Text>
-                <TouchableOpacity style={styles.iconLogOut}>
+                <TouchableOpacity style={styles.iconLogOut} onPress={logOut}>
                     <Image
                         source={require("@/assets/icons/log-out.png")}
                     /></TouchableOpacity>
@@ -31,7 +48,7 @@ const PostsScreen = () => {
                     <Image source={require("@/assets/icons/grid.png")} style={styles.iconFooter}/>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CreatePostScreen')}>
                     <Text style={styles.addButtonText}>+</Text>
                 </TouchableOpacity>
 

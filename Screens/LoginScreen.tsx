@@ -12,12 +12,16 @@ import {
 } from "react-native";
 import {Image} from "expo-image";
 
-
+import Toast from 'react-native-toast-message';
 import {RootStackParamList} from "@/types/navigation.types";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 
-type Props = NativeStackScreenProps<RootStackParamList, "RegistrationScreen" | "LoginScreen">;
-export default function RegistrationScreen({navigation}: Props) {
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "RegistrationScreen" | "LoginScreen">;
+type Props = NavigationProps & {
+    goToRegister: () => void;
+};
+
+export default function LoginScreen({navigation, goToRegister}: Props) {
     const [showPassword, setShowPassword] = useState(false);
     const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
@@ -31,9 +35,23 @@ export default function RegistrationScreen({navigation}: Props) {
         setForm({...form, [key]: value});
     };
 
-    const handleRegister = () => {
+    const handleLogin = () => {
+        if (!form.email || !form.password) {
+            Toast.show({
+                type: "error",
+                text1: "Помилка",
+                text2: "Будь ласка, заповніть всі поля",
+            });
+            return;
+        }
         console.log("User data:", form);
-
+        Toast.show({
+            type: "success",
+            text1: "Успіх",
+            text2: "Ви успішно увійшли!",
+        });
+        // ✅ Переходимо на Home/PostsScreen
+        navigation.navigate("PostsScreen");
     };
 
     return (
@@ -98,12 +116,12 @@ export default function RegistrationScreen({navigation}: Props) {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                        <TouchableOpacity style={styles.button} onPress={handleLogin}>
                             <Text style={styles.buttonText}>Увійти</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.linkContainer}
-                                          onPress={() => navigation.navigate("RegistrationScreen")}>
+                                          onPress={goToRegister}>
                             <Text style={styles.link}>Немає акаунту?{" "}</Text>
                             <Text style={styles.linkup}>Зареєструватися</Text>
                         </TouchableOpacity>

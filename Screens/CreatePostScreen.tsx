@@ -10,18 +10,27 @@ import {
     TouchableWithoutFeedback,
     View
 } from "react-native";
+import Toast from 'react-native-toast-message';
 import {Ionicons} from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '@/types/navigation.types';
 
 export default function CreatePostScreen() {
     const [photo, setPhoto] = useState<string | null>(null);
     const [title, setTitle] = useState("");
     const [location, setLocation] = useState("");
 
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const handlePickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
-            alert("Дозвольте доступ до галереї, щоб завантажити фото");
+            Toast.show({
+                type: "error",
+                text1: "Помилка",
+                text2: "Дозвольте доступ до галереї, щоб завантажити фото",
+            });
             return;
         }
 
@@ -36,8 +45,26 @@ export default function CreatePostScreen() {
     };
 
     const handlePublish = () => {
+        if (!photo || !title || !location) {
+            Toast.show({
+                type: "error",
+                text1: "Помилка",
+                text2: "Заповніть всі поля",
+            });
+            return;
+        }
+
         console.log({photo, title, location});
         // TODO: Надіслати дані на сервер
+
+        Toast.show({
+            type: "success",
+            text1: "Успіх",
+            text2: "Публікацію створено!",
+        });
+
+        handleDelete(); // Очистити поля
+        navigation.goBack(); // Повернутись до списку
     };
 
     const handleDelete = () => {
@@ -48,13 +75,14 @@ export default function CreatePostScreen() {
 
     const isButtonDisabled = !photo || !title || !location;
 
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.safeArea}>
                 <ScrollView contentContainerStyle={styles.container}>
                     {/* Header */}
                     <View style={styles.header}>
-                        <TouchableOpacity style={styles.backButton}>
+                        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                             <Ionicons name="arrow-back" size={24} color="#212121"/>
                         </TouchableOpacity>
                         <Text style={styles.headerTitle}>Створити публікацію</Text>
@@ -167,7 +195,7 @@ const styles = StyleSheet.create({
         right: '40%',
         width: 60,
         height: 60,
-        borderRadius: '50%',
+        borderRadius: 30,
         backgroundColor: "#ffffff",
         alignItems: "center",
         justifyContent: "center",

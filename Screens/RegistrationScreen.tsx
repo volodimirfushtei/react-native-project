@@ -11,13 +11,16 @@ import {
     View,
 } from "react-native";
 import {Image} from "expo-image";
-
-
 import {RootStackParamList} from "@/types/navigation.types";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import Toast from 'react-native-toast-message';
 
-type Props = NativeStackScreenProps<RootStackParamList, "RegistrationScreen" | "LoginScreen">;
-export default function RegistrationScreen({navigation}: Props) {
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "RegistrationScreen" | "LoginScreen">;
+type Props = NavigationProps & {
+    goToLogin: () => void;
+};
+
+export default function RegistrationScreen({navigation, goToLogin}: Props) {
     const [showPassword, setShowPassword] = useState(false);
     const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
@@ -40,7 +43,22 @@ export default function RegistrationScreen({navigation}: Props) {
 
 
     const handleRegister = () => {
+        if (!form.username || !form.email || !form.password) {
+            Toast.show({
+                type: "error",
+                text1: "Помилка",
+                text2: "Будь ласка, заповніть всі поля",
+            });
+            return;
+        }
         console.log("User data:", form);
+        Toast.show({
+            type: "success",
+            text1: "Успіх",
+            text2: "Ви успішно зареєструвалися!",
+        });
+        // ✅ Переходимо на Home/PostsScreen
+        navigation.navigate("PostsScreen");
     };
 
     return (
@@ -129,7 +147,7 @@ export default function RegistrationScreen({navigation}: Props) {
                         </TouchableOpacity>
                         <View style={styles.containerLink}>
 
-                            <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                            <TouchableOpacity onPress={goToLogin}>
                                 <Text style={styles.link}>Вже є акаунт?{" "}Увійти</Text>
                             </TouchableOpacity>
 
