@@ -91,12 +91,12 @@ export default function CreatePostScreen() {
 
                     {/* Image upload */}
                     <TouchableOpacity style={styles.imageBox} onPress={handlePickImage}>
-                        {photo ? (
-                            <Image source={{uri: photo}} style={styles.image}/>
-                        ) : (
-                            <View style={styles.iconBox}><Image
-                                source={require('@/assets/icons/camera_alt-black.png')}/></View>
-                        )}
+                        {photo && <Image source={{uri: photo}} style={styles.image}/>}
+
+                        {/* Іконка камери поверх */}
+                        <View style={styles.iconBox}>
+                            <Image source={require('@/assets/icons/camera_alt-black.svg')} style={styles.cameraIcon}/>
+                        </View>
                     </TouchableOpacity>
 
                     <Text style={styles.uploadText}>Завантажте фото</Text>
@@ -115,7 +115,7 @@ export default function CreatePostScreen() {
                     <View style={styles.locationRow}>
                         <Image
                             style={styles.locationIcon}
-                            source={require("@/assets/icons/map-pin.png")}
+                            source={require("@/assets/icons/map-pin.svg")}
                         />
                         <TextInput
                             style={[styles.input, {flex: 1, borderBottomWidth: 0}]}
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
+
     },
     iconBox: {
         position: "absolute",
@@ -196,10 +197,15 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: "#ffffff",
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
         alignItems: "center",
         justifyContent: "center",
         zIndex: 10,
+    },
+    cameraIcon: {
+        width: 32,
+        height: 32,
+        tintColor: "#ffffff",
     },
     image: {
         width: "100%",

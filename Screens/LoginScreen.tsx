@@ -3,6 +3,7 @@ import {
     Keyboard,
     KeyboardAvoidingView,
     Platform,
+    Pressable,
     StyleSheet,
     Text,
     TextInput,
@@ -116,15 +117,16 @@ export default function LoginScreen({navigation, goToRegister}: Props) {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                        <TouchableOpacity style={styles.button} onPress={handleLogin} activeOpacity={0.8}>
                             <Text style={styles.buttonText}>Увійти</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.linkContainer}
-                                          onPress={goToRegister}>
-                            <Text style={styles.link}>Немає акаунту?{" "}</Text>
-                            <Text style={styles.linkup}>Зареєструватися</Text>
-                        </TouchableOpacity>
+                        <View style={styles.linkContainer}
+                        ><Text style={styles.link}>Немає акаунту?{" "}</Text>
+                            <Pressable onPress={goToRegister} style={({pressed}) => pressed && {opacity: 0.6}}>
+                                <Text style={styles.linkup}>Зареєструватися</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </KeyboardAvoidingView>
             </View>

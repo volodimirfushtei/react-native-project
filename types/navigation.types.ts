@@ -7,6 +7,7 @@ export type RootStackParamList = {
     Home: undefined;
     ProfileScreen: undefined;
     SettingsScreen: undefined;
+    CommentsScreen: undefined;
 
 
 };

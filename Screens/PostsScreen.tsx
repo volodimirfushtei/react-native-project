@@ -1,16 +1,14 @@
 import React from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
-
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "@/types/navigation.types";
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "CreatePostScreen">;
-type Props = NavigationProps & {
-    navigation: any;
-};
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreatePostScreen' | 'ProfileScreen' | 'CommentsScreen'>;
 
-const PostsScreen = ({navigation}: Props) => {
 
+const PostsScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
     const logOut = () => {
 
         (navigation as any).reset({
@@ -26,7 +24,7 @@ const PostsScreen = ({navigation}: Props) => {
                 <Text style={styles.headerText}>Публікації</Text>
                 <TouchableOpacity style={styles.iconLogOut} onPress={logOut}>
                     <Image
-                        source={require("@/assets/icons/log-out.png")}
+                        source={require("@/assets/icons/log-out.svg")}
                     /></TouchableOpacity>
             </View>
 
@@ -44,16 +42,18 @@ const PostsScreen = ({navigation}: Props) => {
 
             {/* Нижня навігаційна панель */}
             <View style={styles.footer}>
-                <TouchableOpacity>
-                    <Image source={require("@/assets/icons/grid.png")} style={styles.iconFooter}/>
+                <TouchableOpacity onPress={() => navigation.navigate('CommentsScreen')}>
+                    <Image source={require("@/assets/icons/grid.png")} style={styles.iconFooter}
+                    />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CreatePostScreen')}>
                     <Text style={styles.addButtonText}>+</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
-                    <Image source={require("@/assets/icons/user.png")} style={styles.iconUser}/>
+                <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+                    <Image source={require("@/assets/icons/user.png")} style={styles.iconUser}
+                    />
                 </TouchableOpacity>
             </View>
         </View>

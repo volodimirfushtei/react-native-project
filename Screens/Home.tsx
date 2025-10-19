@@ -4,7 +4,7 @@ import {Image, StyleSheet, Text, View} from "react-native";
 
 import PostsScreen from "@/Screens/PostsScreen";
 import CreatePostScreen from "@/Screens/CreatePostScreen";
-import ProfileScreen from "@/Screens/ProfileScreen"; // створи пізніше
+import ProfileScreen from "@/Screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 

@@ -3,6 +3,7 @@ import {
     Keyboard,
     KeyboardAvoidingView,
     Platform,
+    Pressable,
     StyleSheet,
     Text,
     TextInput,
@@ -141,15 +142,26 @@ export default function RegistrationScreen({navigation, goToLogin}: Props) {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-
-                        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                        <TouchableOpacity style={styles.button} onPress={handleRegister} activeOpacity={0.6}>
                             <Text style={styles.buttonText}>Зареєструватися</Text>
                         </TouchableOpacity>
                         <View style={styles.containerLink}>
+                            <Text style={styles.link}>Вже є акаунт?{" "}</Text>
+                            <Pressable onPress={goToLogin}
+                                       style={({pressed}) => pressed && {
+                                           opacity: 0.6,
 
-                            <TouchableOpacity onPress={goToLogin}>
-                                <Text style={styles.link}>Вже є акаунт?{" "}Увійти</Text>
-                            </TouchableOpacity>
+                                           shadowColor: "#ff6600",
+                                           shadowOffset: {
+                                               width: 0,
+                                               height: 2,
+                                           },
+                                           shadowOpacity: 0.25,
+                                           shadowRadius: 3.84,
+                                           elevation: 5,
+                                       }}>
+                                <Text style={styles.link}>Увійти</Text>
+                            </Pressable>
 
                         </View>
                     </View>
@@ -257,7 +269,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
     },
-    containerLink: {alignItems: "center", justifyContent: "center", marginTop: 16,},
+    containerLink: {flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16,},
 
     link: {
         color: "#1B4373",
