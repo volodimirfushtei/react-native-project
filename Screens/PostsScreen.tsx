@@ -4,7 +4,7 @@ import {RootStackParamList} from "@/types/navigation.types";
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreatePostScreen' | 'ProfileScreen' | 'CommentsScreen'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreatePostScreen' | 'ProfileScreen' | 'CommentsScreen' | 'Home'>;
 
 
 const PostsScreen = () => {
@@ -42,7 +42,7 @@ const PostsScreen = () => {
 
             {/* Нижня навігаційна панель */}
             <View style={styles.footer}>
-                <TouchableOpacity onPress={() => navigation.navigate('CommentsScreen')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Home')}>
                     <Image source={require("@/assets/icons/grid.png")} style={styles.iconFooter}
                     />
                 </TouchableOpacity>

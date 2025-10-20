@@ -1,14 +1,26 @@
-import React, {useState} from "react";
-import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {Animated, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 
-export default function UserAvatar() {
+export default function UserAvatar({uri}: { uri: string }) {
+    const scale = useRef(new Animated.Value(0.8)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
     const [avatar, setAvatar] = useState<string | null>(
-        "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+        uri || "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
     );
-
+    useEffect(() => {
+        Animated.parallel([
+            Animated.spring(scale, {toValue: 1, useNativeDriver: true}),
+            Animated.timing(opacity, {
+                toValue: 1,
+                duration: 400,
+                delay: 150,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, [avatar, scale, opacity]);
     const handlePickImage = async () => {
         const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permission.granted) return;
@@ -21,6 +33,7 @@ export default function UserAvatar() {
         });
 
         if (!result.canceled) {
+
             setAvatar(result.assets[0].uri);
         }
     };
@@ -32,13 +45,14 @@ export default function UserAvatar() {
     return (
         <View style={styles.container}>
             <View style={styles.avatarWrapper}>
-                <Image
+                <Animated.Image
                     source={
                         avatar
                             ? {uri: avatar}
                             : require("@/assets/images/default-avatar.png")
                     }
-                    style={styles.avatar}
+                    style={[styles.avatar, {opacity, transform: [{scale}]}]}
+
                 />
                 <TouchableOpacity
                     style={[styles.iconButton, avatar ? styles.removeBtn : styles.addBtn]}

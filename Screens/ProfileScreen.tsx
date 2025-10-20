@@ -76,10 +76,12 @@ export default function ProfileScreen() {
                 <Text style={styles.postTitle}>{item.title}</Text>
                 <View style={styles.postInfo}>
                     <View style={styles.stats}>
-                        <Image
-                            style={styles.messageIcon}
-                            source={require("@/assets/icons/message-circle.svg")}
-                        />
+                        <TouchableOpacity onPress={() => navigation.navigate('CommentsScreen')}>
+                            <Image
+                                style={styles.messageIcon}
+                                source={require("@/assets/icons/message-circle.svg")}
+                            />
+                        </TouchableOpacity>
                         <Text style={styles.textStat}>{item.comments}</Text>
                         <Pressable
                             onPress={() => handleLike(item.id)}
@@ -118,7 +120,7 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
                 <View
                     style={{flex: 1, alignItems: "center", marginTop: 30, position: "absolute", top: 70, left: "35%"}}>
-                    <UserAvatar/>
+                    <UserAvatar uri="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"/>
 
 
                 </View>
