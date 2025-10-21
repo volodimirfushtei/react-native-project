@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {
-    Image,
     Keyboard,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
@@ -16,6 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '@/types/navigation.types';
+import {Image} from "expo-image";
 
 export default function CreatePostScreen() {
     const [photo, setPhoto] = useState<string | null>(null);
@@ -90,13 +91,13 @@ export default function CreatePostScreen() {
                     </View>
 
                     {/* Image upload */}
-                    <TouchableOpacity style={styles.imageBox} onPress={handlePickImage}>
+                    <TouchableOpacity style={styles.imageBox}>
                         {photo && <Image source={{uri: photo}} style={styles.image}/>}
 
                         {/* Іконка камери поверх */}
-                        <View style={styles.iconBox}>
-                            <Image source={require('@/assets/icons/camera_alt-black.svg')} style={styles.cameraIcon}/>
-                        </View>
+                        <Pressable style={styles.iconBox} onPress={handlePickImage}>
+                            <Image style={styles.cameraIcon} source={require('@/assets/icons/camera_alt-black.svg')}/>
+                        </Pressable>
                     </TouchableOpacity>
 
                     <Text style={styles.uploadText}>Завантажте фото</Text>
@@ -113,17 +114,20 @@ export default function CreatePostScreen() {
 
                     {/* Location */}
                     <View style={styles.locationRow}>
-                        <Image
-                            style={styles.locationIcon}
-                            source={require("@/assets/icons/map-pin.svg")}
-                        />
+
                         <TextInput
-                            style={[styles.input, {flex: 1, borderBottomWidth: 0}]}
+                            style={[styles.input, {textAlign: "left", paddingHorizontal: 30}]}
                             placeholder="Місцевість..."
                             placeholderTextColor="#BDBDBD"
                             value={location}
                             onChangeText={setLocation}
                         />
+                        <Pressable style={styles.iconInsideInput}>
+                            <Image
+                                style={styles.locationIcon}
+                                source={require("@/assets/icons/map-pin.svg")}
+                            />
+                        </Pressable>
                     </View>
 
                     {/* Publish Button */}
@@ -224,13 +228,14 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#E8E8E8",
         paddingVertical: 8,
+        paddingHorizontal: 8,
         fontSize: 16,
         fontWeight: 400,
         color: "#212121",
 
+
     },
     locationRow: {
-
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
@@ -238,11 +243,18 @@ const styles = StyleSheet.create({
         borderBottomColor: "#E8E8E8",
         marginBottom: 32,
     },
+    iconInsideInput: {
+        position: 'absolute',
+        left: 0,
+        top: '50%',
+        transform: [{translateY: -16}], // Половина висоти іконки
+        padding: 4,
+    },
     locationIcon: {
-        marginRight: 4,
+
         width: 24,
         height: 24,
-        color: "#BDBDBD",
+        color: "#696565",
     },
     button: {
         width: "100%",
@@ -250,6 +262,7 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         borderRadius: 100,
         alignItems: "center",
+        marginLeft: 4,
 
     },
     buttonDisabled: {

@@ -39,6 +39,9 @@ export default function CommentsScreen() {
             avatar: "https://i.pravatar.cc/50?img=3",
             text: comment,
             date: "Сьогодні | " + new Date().toLocaleTimeString().slice(0, 5),
+            location: "Ukraine",
+            likes: 0,
+            comments: 0,
         };
         setComments([...comments, newComment]);
         setComment("");
