@@ -1,10 +1,11 @@
 import React from "react";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {StyleSheet, View} from "react-native";
+import PostsScreen from "@/Screens/Home/PostsScreen";
+import CreatePostScreen from "@/Screens/Home/CreatePostScreen";
+import ProfileScreen from "@/Screens/Home/ProfileScreen";
+import {Feather} from '@expo/vector-icons';
 
-import PostsScreen from "@/Screens/PostsScreen";
-import CreatePostScreen from "@/Screens/CreatePostScreen";
-import ProfileScreen from "@/Screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,10 +24,9 @@ export default function Home() {
                 component={PostsScreen}
                 options={{
                     tabBarIcon: ({focused}) => (
-                        <Image
-                            source={require("@/assets/icons/grid.png")}
-                            style={[styles.icon, focused && {tintColor: "#FF6C00"}]}
-                        />
+                        <Feather name="grid" size={24}
+                                 color={focused ? "#FF6C00" : "#bdbdbd"}
+                                 style={styles.icon}/>
                     ),
                 }}
             />
@@ -36,31 +36,38 @@ export default function Home() {
                 name="CreatePostScreen"
                 component={CreatePostScreen}
                 options={{
-                    tabBarIcon: () => (
-                        <View style={styles.addButton}>
-                            <Text style={styles.addButtonText}>+</Text>
+                    tabBarIcon: ({focused}) => (
+                        <View
+                            style={[
+                                styles.addButton,
+                                focused && styles.addButtonFocused
+                            ]}
+                        >
+                            <Feather
+                                name="plus"
+                                size={24}
+                                color={focused ? "#FFFFFF" : "#FFFFFF"}
+                            />
                         </View>
                     ),
+                    tabBarStyle: {display: 'none'}, // Приховати текст
                 }}
             />
-
             {/* Профіль */}
             <Tab.Screen
                 name="ProfileScreen"
                 component={ProfileScreen}
                 options={{
                     tabBarIcon: ({focused}) => (
-                        <Image
-                            source={require("@/assets/icons/user.png")}
-                            style={[styles.icon, focused && {tintColor: "#FF6C00"}]}
-                        />
+                        <Feather name="user" size={24}
+                                 color={focused ? "#FF6C00" : "#bdbdbd"}
+                                 style={styles.icon}/>
                     ),
                 }}
             />
         </Tab.Navigator>
     );
 }
-
 const styles = StyleSheet.create({
     tabBar: {
         height: 83,
@@ -68,8 +75,15 @@ const styles = StyleSheet.create({
         borderTopColor: "#E8E8E8",
         backgroundColor: "#fff",
         alignItems: "center",
+        justifyContent: "center",
     },
     icon: {
+        width: 24,
+        height: 24,
+        tintColor: "#212121",
+        top: 9,
+    },
+    iconPlus: {
         width: 24,
         height: 24,
         tintColor: "#212121",
@@ -81,11 +95,16 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",
-        top: -10,
+        top: 9,
+    },
+    addButtonFocused: {
+        backgroundColor: "#FF6C00",
+
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
     },
     addButtonText: {
-        fontSize: 30,
-        color: "#fff",
+        fontSize: 30, color: "#fff",
         lineHeight: 35,
     },
 });

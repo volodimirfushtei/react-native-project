@@ -3,11 +3,13 @@ export type RootStackParamList = {
     RegistrationScreen: undefined;
     PostsScreen: undefined;
     CreatePostScreen: undefined;
-    AuthContainer: undefined;
+    Auth: undefined;
     Home: undefined;
+    AuthNavigator: undefined;
     ProfileScreen: undefined;
     SettingsScreen: undefined;
     CommentsScreen: undefined;
+    AppNavigator: undefined;
 
 
 };

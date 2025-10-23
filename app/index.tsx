@@ -1,16 +1,7 @@
 import 'react-native-gesture-handler';
 import React from "react";
-import AuthContainer from "@/Screens/AuthContainer";
-import {RootStackParamList} from "@/types/navigation.types";
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import PostsScreen from "@/Screens/PostsScreen";
-import CreatePostScreen from "@/Screens/CreatePostScreen";
-import Home from "@/Screens/Home";
+import AppNavigator from "./Navigations/AppNavigator";
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
-import CommentsScreen from "@/Screens/CommentsScreen";
-import ProfileScreen from "@/Screens/ProfileScreen";
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
 
@@ -64,18 +55,10 @@ export default function RootNavigator() {
     };
     return (
         <>
-            <Stack.Navigator screenOptions={{headerShown: false, animation: 'fade'}}
-                             initialRouteName="AuthContainer">
-                {/* Для неавторизованого користувача */}
-                <Stack.Screen name="AuthContainer" component={AuthContainer}/>
-                {/* Головний екран після логіну */}
-                <Stack.Screen name="Home" component={Home}/>
-                <Stack.Screen name="PostsScreen" component={PostsScreen}/>
-                <Stack.Screen name="CreatePostScreen" component={CreatePostScreen}/>
-                <Stack.Screen name="CommentsScreen" component={CommentsScreen}/>
-                <Stack.Screen name="ProfileScreen" component={ProfileScreen}/>
 
-            </Stack.Navigator>
+            <AppNavigator/>
+
+            );
             <Toast config={toastConfig}/>
         </>
     );
