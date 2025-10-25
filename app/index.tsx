@@ -2,6 +2,8 @@ import 'react-native-gesture-handler';
 import React from "react";
 import AppNavigator from "./Navigations/AppNavigator";
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
+import {PostsProvider} from '@/Screens/Home/CreatePostScreen';
+import {CommentsProvider} from '@/utils/CommentsProvider';
 
 export default function RootNavigator() {
 
@@ -10,7 +12,7 @@ export default function RootNavigator() {
             <BaseToast
                 {...props}
                 style={{
-                    borderLeftColor: '#24af03',
+                    borderLeftColor: '#29a900',
                     // твій акцентний колір
                     backgroundColor: 'rgba(204,255,200,0.8)',
                     borderRadius: 12,
@@ -55,9 +57,11 @@ export default function RootNavigator() {
     };
     return (
         <>
-
-            <AppNavigator/>
-
+            <CommentsProvider>
+                <PostsProvider>
+                    <AppNavigator/>
+                </PostsProvider>
+            </CommentsProvider>
             );
             <Toast config={toastConfig}/>
         </>

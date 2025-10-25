@@ -9,18 +9,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "App needs access to location when open to show nearby posts.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "App needs access to location when in the background to provide location-based features.",
+        "UIBackgroundModes": ["location"]
+      }
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/splash-icon.png",
-        "monochromeImage": "./assets/images/android-icon-foreground.png"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.volfush.myreactnativeproject",
-      "softwareKeyboardLayoutMode": "pan"
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "ACCESS_BACKGROUND_LOCATION"],
+      "package": "com.yourcompany.yourappname"
     },
     "web": {
       "output": "static",
@@ -40,7 +38,15 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "App needs access to location when open and in the background.",
+          "locationWhenInUsePermission": "App needs access to location when open to show nearby posts.",
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
