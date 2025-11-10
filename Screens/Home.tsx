@@ -5,7 +5,7 @@ import PostsScreen from "@/Screens/Home/PostsScreen";
 import CreatePostScreen from "@/Screens/Home/CreatePostScreen";
 import ProfileScreen from "@/Screens/Home/ProfileScreen";
 import {Feather} from '@expo/vector-icons';
-
+import SettingsScreen from "@/Screens/Home/SettingsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -60,6 +60,17 @@ export default function Home() {
                 options={{
                     tabBarIcon: ({focused}) => (
                         <Feather name="user" size={24}
+                                 color={focused ? "#FF6C00" : "#bdbdbd"}
+                                 style={styles.icon}/>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="SettingsScreen"
+                component={SettingsScreen}
+                options={{
+                    tabBarIcon: ({focused}) => (
+                        <Feather name="settings" size={24}
                                  color={focused ? "#FF6C00" : "#bdbdbd"}
                                  style={styles.icon}/>
                     ),

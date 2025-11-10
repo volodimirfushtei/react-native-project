@@ -1,59 +1,140 @@
-import React, {useState} from "react";
-import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useState} from "react";
+import {Alert, Image, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Feather} from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import Toast from 'react-native-toast-message';
+
 
 interface UserAvatarProps {
     uri?: string;
     onAvatarChange?: (uri: string | null) => void;
     size?: number;
     editable?: boolean;
+    onPress?: () => void;
 }
 
 export default function UserAvatar({
                                        uri,
                                        onAvatarChange,
                                        size = 120,
-                                       editable = true
+                                       editable = true,
+
                                    }: UserAvatarProps) {
     const [avatar, setAvatar] = useState<string | null>(uri || null);
-
+    // Оновлення аватара при зміні uri з пропсів
+    useEffect(() => {
+        if (uri !== undefined) {
+            setAvatar(uri);
+        }
+    }, [uri]);
     const handlePickImage = async () => {
         if (!editable) return;
 
-        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permission.granted) {
+        // Запит дозволів на камеру ТА галерею
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+        const mediaPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!cameraPermission.granted || !mediaPermission.granted) {
             Toast.show({
                 type: "error",
                 text1: "Доступ заборонено",
-                text2: "Дозвольте доступ до галереї",
+                text2: "Дозвольте доступ до камери та галереї",
             });
             return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images"],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8,
-        });
+        // Показуємо вибір: камера чи галерея
+        Alert.alert(
+            "Виберіть джерело",
+            "Звідки завантажити аватар?",
+            [
+                {text: "Скасувати", style: "cancel"},
+                {
+                    text: "Зробити фото",
+                    onPress: () => pickFromCamera(),
+                },
+                {
+                    text: "Вибрати з галереї",
+                    onPress: () => pickFromLibrary(),
+                },
+            ],
+            {cancelable: true}
+        );
+    };
 
-        if (!result.canceled && result.assets[0]) {
-            const newAvatar = result.assets[0].uri;
-            setAvatar(newAvatar);
-            onAvatarChange?.(newAvatar);
-            Toast.show({type: "success", text1: "Аватар змінено"});
+    const pickFromCamera = async () => {
+        try {
+            const result = await ImagePicker.launchCameraAsync({
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+            });
+
+            if (!result.canceled && result.assets[0]) {
+                const newAvatar = result.assets[0].uri;
+                setAvatar(newAvatar);
+                onAvatarChange?.(newAvatar);
+                Toast.show({
+                    type: "success",
+                    text1: "Успіх",
+                    text2: "Фото з камери додано",
+                });
+            }
+        } catch (error) {
+            console.error("Помилка камери:", error);
+            Toast.show({
+                type: "error",
+                text1: "Помилка",
+                text2: "Не вдалося зробити фото",
+            });
         }
     };
+
+    const pickFromLibrary = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ["images"],
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+            });
+
+            if (!result.canceled && result.assets[0]) {
+                const newAvatar = result.assets[0].uri;
+                setAvatar(newAvatar);
+                onAvatarChange?.(newAvatar);
+                Toast.show({
+                    type: "success",
+                    text1: "Успіх",
+                    text2: "Зображення з галереї додано",
+                });
+            }
+        } catch (error) {
+            console.error("Помилка галереї:", error);
+            Toast.show({
+                type: "error",
+                text1: "Помилка",
+                text2: "Не вдалося вибрати зображення",
+            });
+        }
+    };
+
 
     const handleRemove = () => {
         if (!editable) return;
         setAvatar(null);
         onAvatarChange?.(null);
-        Toast.show({type: "info", text1: "Аватар видалено"});
+        Toast.show({
+            type: "info",
+            text1: "Інформація",
+            text2: "Аватар видалено"
+        });
     };
-
+    const avatarStyles = {
+        width: size,
+        height: size,
+        borderRadius: size * 0.133,
+    };
     return (
         <View style={styles.container}>
             <View style={[styles.avatarWrapper, {width: size, height: size}]}>
@@ -63,7 +144,12 @@ export default function UserAvatar({
                             ? {uri: avatar}
                             : require("@/assets/images/default-avatar.png")
                     }
-                    style={[styles.avatar, {width: size, height: size}]}
+                    style={[styles.avatar, avatarStyles]}
+                    onError={() => {
+                        // Обробка помилки завантаження зображення
+                        setAvatar(null);
+                        onAvatarChange?.(null);
+                    }}
                 />
 
                 {editable && (

@@ -13,38 +13,83 @@ interface CommentsContextType {
 const CommentsContext = createContext<CommentsContextType | undefined>(undefined);
 
 export const CommentsProvider: React.FC<{ children: ReactNode }> = ({children}) => {
+
     const [comments, setComments] = useState<Comment[]>([
         {
-            id: '1',
-            postId: '1',
-            author: 'Natali Romanova',
-            authorAvatar: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e',
-            text: 'Це чудова фотографія!',
-            timestamp: new Date('2024-01-15'),
-            likes: 3,
+            id: "1",
+            postId: "1",
+            user: "John Doe",
+            avatar: "https://i.pravatar.cc/50?img=1",
+            text: "Really love your most recent photo. I've been trying to capture the same thing for a few months and would love some tips!",
+            date: "09 червня, 2020 | 08:40",
+            timestamp: new Date(2020, 5, 9, 8, 40),
+            likes: 2
         },
         {
-            id: '2',
-            postId: '1',
-            author: 'Іван Петров',
-            text: 'Де це було зроблено?',
-            timestamp: new Date('2024-01-16'),
-            likes: 1,
+            id: "2",
+            postId: "1",
+            user: "Sarah Smith",
+            avatar: "https://i.pravatar.cc/50?img=2",
+            text: "A fast 50mm like f1.8 would help with the bokeh. I've been using primes as they tend to get a bit sharper images.",
+            date: "09 червня, 2020 | 09:14",
+            timestamp: new Date(2020, 5, 9, 9, 14),
+            likes: 1
+        },
+        {
+            id: "3",
+            postId: "1",
+            user: "John Doe",
+            avatar: "https://i.pravatar.cc/50?img=1",
+            text: "Thank you! That was very helpful!",
+            date: "09 червня, 2020 | 09:20",
+            timestamp: new Date(2020, 5, 9, 9, 20),
+            likes: 0
+        },
+        {
+            id: "4",
+            postId: "2",
+            user: "Mike Johnson",
+            avatar: "https://i.pravatar.cc/50?img=4",
+            text: "Amazing landscape! Where was this taken?",
+            date: "10 червня, 2020 | 10:30",
+            timestamp: new Date(2020, 5, 10, 10, 30),
+            likes: 3
         },
     ]);
 
-    const addComment = (postId: string, text: string, author: string = 'Natali Romanova') => {
+    const formatDate = (date: Date) => {
+        const today = new Date();
+        const isToday = date.toDateString() === today.toDateString();
+
+        if (isToday) {
+            return `Сьогодні | ${date.toLocaleTimeString('uk-UA', {
+                hour: '2-digit',
+                minute: '2-digit'
+            })}`;
+        } else {
+            return date.toLocaleDateString('uk-UA', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }) + ' | ' + date.toLocaleTimeString('uk-UA', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    };
+
+    const addComment = (postId: string, text: string, author: string = "Natali Romanova") => {
         const newComment: Comment = {
             id: Date.now().toString(),
             postId,
-            author,
-            authorAvatar: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e',
+            user: author,
+            avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
             text,
+            date: formatDate(new Date()),
             timestamp: new Date(),
-            likes: 0,
+            likes: 0
         };
-
-        setComments(prev => [newComment, ...prev]);
+        setComments(prev => [...prev, newComment]);
     };
 
     const deleteComment = (commentId: string) => {
@@ -62,12 +107,17 @@ export const CommentsProvider: React.FC<{ children: ReactNode }> = ({children}) 
     };
 
     const getCommentsByPostId = (postId: string) => {
-        return comments.filter(comment => comment.postId === postId)
+        const postComments = comments.filter(comment => comment.postId === postId)
             .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+        console.log(`Getting comments for post ${postId}:`, postComments);
+        return postComments;
     };
 
     const getCommentsCount = (postId: string) => {
-        return comments.filter(comment => comment.postId === postId).length;
+        const count = comments.filter(comment => comment.postId === postId).length;
+        console.log(`Comments count for post ${postId}:`, count);
+        return count;
     };
 
     return (

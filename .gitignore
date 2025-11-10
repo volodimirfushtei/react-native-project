@@ -41,3 +41,8 @@ app-example
 # generated native folders
 /ios
 /android
+# Build and cache
+.cache/
+build/
+.next/
+out/

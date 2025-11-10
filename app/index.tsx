@@ -1,35 +1,56 @@
+// RootNavigator.tsx
 import 'react-native-gesture-handler';
-import React from "react";
-import AppNavigator from "./Navigations/AppNavigator";
+import React, {useEffect, useState} from 'react';
+import {Provider} from 'react-redux';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
-import {PostsProvider} from '@/Screens/Home/CreatePostScreen';
+import {LoadingScreen} from '@/components/LoadingScreen';
+import AppNavigator from "./Navigations/AppNavigator";
+import {PostsProvider} from '@/utils/PostContext';
 import {CommentsProvider} from '@/utils/CommentsProvider';
+import {store} from '@/redux/store';
+import AuthNavigator from './Navigations/AuthNavigator';
+
+// ✅ Імпортуйте auth та onAuthStateChanged
+import {getAuthInstance} from '@/lib/firebase';
+import {onAuthStateChanged} from 'firebase/auth';
+import {AuthProvider} from "@/utils/AuthContext";
 
 export default function RootNavigator() {
+    const [isAppReady, setIsAppReady] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const auth = getAuthInstance();
+        return onAuthStateChanged(auth, (user) => {
+            setIsAuthenticated(!!user);
+            setIsAppReady(true);
+        });
+    }, []);
+
+    if (!isAppReady) {
+        return <LoadingScreen/>;
+    }
 
     const toastConfig = {
         success: (props: any) => (
             <BaseToast
                 {...props}
                 style={{
-                    borderLeftColor: '#29a900',
-                    // твій акцентний колір
-                    backgroundColor: 'rgba(204,255,200,0.8)',
+                    borderLeftColor: '#44d51c',
+                    backgroundColor: 'rgba(227,232,227,0.8)',
                     borderRadius: 12,
-
                     shadowOpacity: 0.15,
-                    marginTop: 5,
 
                 }}
                 contentContainerStyle={{paddingHorizontal: 16}}
                 text1Style={{
                     fontSize: 16,
                     fontWeight: '600',
-                    color: '#222',
+                    color: '#282828',
                 }}
                 text2Style={{
                     fontSize: 12,
-                    color: '#666',
+                    color: '#3b3b3b',
                 }}
             />
         ),
@@ -39,34 +60,38 @@ export default function RootNavigator() {
                 {...props}
                 style={{
                     borderLeftColor: '#ff4444',
-                    backgroundColor: 'rgba(255,210,210,0.7)',
+                    backgroundColor: 'rgba(229,225,225,0.7)',
                     borderRadius: 12,
                     marginTop: 5,
                 }}
                 text1Style={{
-                    color: '#ff3333', fontSize: 16,
+                    color: '#ff3333',
+                    fontSize: 14,
                     fontWeight: '600',
                 }}
                 text2Style={{
-                    color: '#b33', fontSize: 12,
+                    color: '#b33',
+                    fontSize: 10,
                     fontWeight: '600',
                 }}
             />
         ),
-
     };
+
     return (
-        <>
-            <CommentsProvider>
+        <Provider store={store}>
+
+            <AuthProvider>
                 <PostsProvider>
-                    <AppNavigator/>
+                    <CommentsProvider>
+                        {isAuthenticated ? <AppNavigator/> : <AuthNavigator/>}
+                    </CommentsProvider>
                 </PostsProvider>
-            </CommentsProvider>
-            );
-            <Toast config={toastConfig}/>
-        </>
+                <Toast config={toastConfig}/>
+            </AuthProvider>
+
+        </Provider>
     );
 }
-
 
 

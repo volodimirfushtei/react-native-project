@@ -4,18 +4,35 @@ export type RootStackParamList = {
     PostsScreen: undefined;
     CreatePostScreen: undefined;
     Auth: undefined;
-    Home: undefined;
+    Home: undefined | {
+        screen: 'PostsScreen' | 'CreatePostScreen' | 'ProfileScreen';
+        params?: any;
+    };
     AuthNavigator: undefined;
     ProfileScreen: undefined;
     SettingsScreen: undefined;
     CommentsScreen: { postId: string };
     MapScreen: { location: string; latitude?: number; longitude?: number };
     AppNavigator: undefined;
+    Settings: undefined;
+    EditProfile: undefined;
+    ChangePassword: undefined;
+    deleteAccount: undefined;
 
 
 };
 
-export interface PostData {
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    createdAt: Date;
+    updatedAt?: Date;
+}
+
+
+export interface Post {
     id: string;
     photo: string;
     title: string;
@@ -32,9 +49,10 @@ export interface PostData {
 export interface Comment {
     id: string;
     postId: string;
-    author: string;
-    authorAvatar?: string;
+    user: string;
+    avatar: string;
     text: string;
+    date: string;
     timestamp: Date;
     likes: number;
 }
