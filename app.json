@@ -4,7 +4,7 @@
     "slug": "react-native-project",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/splash-icon.png",
+    "icon": "./src/assets/images/splash-icon.png",
     "scheme": "react-native-project",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -27,11 +27,10 @@
       "package": "com.yourcompany.yourappname"
     },
     "web": {
-      "output": "static",
+      "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
       [
         "expo-splash-screen",
         {
@@ -55,11 +54,9 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true,
       "reactCompiler": true
     },
     "extra": {
-      "router": {},
       "eas": {
         "projectId": "269a4690-8b54-4600-9a11-f306fa8d8f27"
       }
