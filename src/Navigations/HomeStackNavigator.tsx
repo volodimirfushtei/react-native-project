@@ -25,6 +25,7 @@ export default function HomeStackNavigator() {
             <Stack.Screen name="CommentsScreen" component={CommentsScreen}/>
             <Stack.Screen name="MapScreen" component={MapScreen}/>
 
+
         </Stack.Navigator>
     );
 }
