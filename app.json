@@ -7,24 +7,35 @@
     "icon": "./src/assets/images/splash-icon.png",
     "scheme": "react-native-project",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.yourappname",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "App needs access to location when open to show nearby posts.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "App needs access to location when in the background to provide location-based features.",
         "UIBackgroundModes": [
           "location"
-        ]
+        ],
+        "NSCameraUsageDescription": "Додатку потрібен доступ до камери, щоб робити фотографії для ваших постів.",
+        "NSMicrophoneUsageDescription": "Додатку потрібен доступ до мікрофона для запису відео.",
+        "NSPhotoLibraryUsageDescription": "Додатку потрібен доступ до фототека для вибору зображень."
       }
     },
     "android": {
+      "package": "com.yourcompany.yourappname",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
       ],
-      "package": "com.yourcompany.yourappname"
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/splash-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
       "output": "single",
@@ -51,11 +62,16 @@
           "locationWhenInUsePermission": "App needs access to location when open to show nearby posts.",
           "isAndroidBackgroundLocationEnabled": true
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Додатку потрібен доступ до камери, щоб робити фотографії для ваших постів.",
+          "microphonePermission": "Додатку потрібен доступ до мікрофона для запису відео.",
+          "recordAudioAndroid": true
+        }
       ]
     ],
-    "experiments": {
-      "reactCompiler": true
-    },
     "extra": {
       "eas": {
         "projectId": "269a4690-8b54-4600-9a11-f306fa8d8f27"
