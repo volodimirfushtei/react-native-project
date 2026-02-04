@@ -25,7 +25,7 @@ export default function RootNavigator() {
     }, [isAuthenticated]);
 
     if (loading) return <LoadingScreen/>;
-    if (showSplash) return <SplashScreen onFinish={() => setShowSplash(true)}/>;
+    if (!showSplash) return <SplashScreen onFinish={() => setShowSplash(true)}/>;
     if (!initialRoute) return <LoadingScreen/>;
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>

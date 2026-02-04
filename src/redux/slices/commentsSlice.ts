@@ -1,18 +1,7 @@
 import {Comment} from '@/types/navigation.types';
 import type {RootState} from '@/redux/store';
 import {createAsyncThunk, createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {
-    addDoc,
-    collection,
-    doc,
-    getDocs,
-    increment,
-    orderBy,
-    query,
-    serverTimestamp,
-    updateDoc,
-    where
-} from 'firebase/firestore';
+import {addDoc, collection, doc, getDocs, increment, orderBy, query, updateDoc, where} from 'firebase/firestore';
 import {db} from '@/lib/firebase';
 
 interface CommentsState {
@@ -56,7 +45,10 @@ export const fetchComments = createAsyncThunk<
                 userName: data.userName,
                 avatar: data.avatar ?? null,
                 likes: data.likes ?? 0,
-                createdAt: data.createdAt?.toMillis() ?? Date.now(),
+                createdAt: typeof data.createdAt === 'number'
+                    ? data.createdAt
+                    : data.createdAt?.toMillis() ?? Date.now()
+
             };
         });
     } catch (e: any) {
@@ -67,25 +59,40 @@ export const fetchComments = createAsyncThunk<
 
 export const addComment = createAsyncThunk<
     Comment,
-    { postId: string; text: string; userName: string; userId: string; avatar?: string; },
+    {
+        postId: string;
+        text: string;
+        userName: string;
+        userId: string;
+        avatar?: string;
+    },
     { rejectValue: string }
 >('comments/addComment', async (data, {rejectWithValue}) => {
     try {
-        const ref = await addDoc(collection(db, 'comments'), {
+        const comment = {
             ...data,
+            avatar: data.avatar ?? null,
             likes: 0,
-            createdAt: serverTimestamp(),
+            createdAt: Date.now(),
+        };
+
+        const ref = await addDoc(collection(db, 'comments'), {
+            postId: data.postId,
+            text: data.text,
+            userId: data.userId,
+            userName: data.userName,
+            avatar: data.avatar ?? null,
+            likes: 0,
+            createdAt: Date.now(),
         });
-        // збільшуємо лічильни коментарів у пості
+
         await updateDoc(doc(db, 'posts', data.postId), {
             comments: increment(1),
         });
 
         return {
             id: ref.id,
-            ...data,
-            likes: 0,
-            createdAt: Date.now(),
+            ...comment,
         };
     } catch (e: any) {
         return rejectWithValue(e.message);

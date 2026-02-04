@@ -54,6 +54,6 @@ export interface Comment {
     userId: string;
     userName: string;
     likes: number;
-    avatar?: string;
+    avatar: string | null;
     createdAt?: number;
 }

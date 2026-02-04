@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.yourappname",
+      "bundleIdentifier": "Fushtei Volodymyr",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "App needs access to location when open to show nearby posts.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "App needs access to location when in the background to provide location-based features.",
@@ -22,7 +22,7 @@
       }
     },
     "android": {
-      "package": "com.yourcompany.yourappname",
+      "package": "Fushtei Volodymyr",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",

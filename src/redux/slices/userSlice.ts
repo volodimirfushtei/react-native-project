@@ -1,10 +1,19 @@
 // store/userSlice.ts
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {auth, db} from '@/lib/firebase';
+import {auth, db, storage} from '@/lib/firebase';
 import {doc, getDoc, setDoc, updateDoc} from 'firebase/firestore';
 import Toast from 'react-native-toast-message';
 import type {RootState} from '@/redux/store';
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+
+
 // ----- Async Thunks -----
+interface UserState {
+    displayName: string;
+    avatar?: string | null;
+    loading: boolean;
+    error: string | null;
+}
 
 export const loadUserData = createAsyncThunk(
     'user/loadUserData',
@@ -28,45 +37,39 @@ export const loadUserData = createAsyncThunk(
 
 // Функція для завантаження аватара у Firestore
 export const uploadAvatar = createAsyncThunk<
-    string, // повертаємо Base64 аватару
-    string,// отримуємо URI зображення
+    string,
+    string,
     { rejectValue: string }
->("auth/uploadAvatar", async (imageUri, {rejectWithValue}) => {
-    if (!auth.currentUser) return rejectWithValue("User not authenticated");
-
+>('user/uploadAvatar', async (uri, {rejectWithValue}) => {
     try {
-        const response = await fetch(imageUri);
+        const response = await fetch(uri);
         const blob = await response.blob();
 
-        const reader = new FileReader();
-        const base64Promise = new Promise<string>((resolve, reject) => {
-            reader.onerror = reject;
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-        });
+        const avatarRef = ref(storage, `avatars/${auth.currentUser!.uid}.jpg`);
+        await uploadBytes(avatarRef, blob);
 
-        const base64Data = await base64Promise;
+        const url = await getDownloadURL(avatarRef);
 
-        // Зберігаємо у Firestore
-        const userDocRef = doc(db, "users", auth.currentUser.uid);
-        await setDoc(userDocRef, {avatar: base64Data}, {merge: true});
+        await setDoc(
+            doc(db, 'users', auth.currentUser!.uid),
+            {avatar: url},
+            {merge: true}
+        );
 
-        return base64Data;
-    } catch (error: any) {
-        return rejectWithValue(error.message || "Failed to upload avatar");
+        return url;
+    } catch (e: any) {
+        return rejectWithValue(e.message);
     }
 });
-export const removeAvatar = createAsyncThunk<void, void, { rejectValue: string }>(
-    "auth/removeAvatar",
-    async (_, {rejectWithValue}) => {
-        if (!auth.currentUser) return rejectWithValue("User not authenticated");
 
-        try {
-            const userDocRef = doc(db, "users", auth.currentUser.uid);
-            await updateDoc(userDocRef, {avatar: null});
-        } catch (error: any) {
-            return rejectWithValue(error.message || "Failed to remove avatar");
-        }
+export const removeAvatar = createAsyncThunk(
+    'user/removeAvatar',
+    async () => {
+        await updateDoc(
+            doc(db, 'users', auth.currentUser!.uid),
+            {avatar: null}
+        );
+        return null;
     }
 );
 

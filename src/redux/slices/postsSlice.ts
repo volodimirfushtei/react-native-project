@@ -5,7 +5,6 @@ import {db} from '@/lib/firebase';
 import {addDoc, collection, serverTimestamp,} from 'firebase/firestore';
 import type {RootState} from '@/redux/store';
 import {getPosts} from '@/utils/firestore';
-import {uploadImage} from '@/utils/storage';
 
 interface PostsState {
     posts: Post[];
@@ -57,25 +56,17 @@ export const fetchPosts = createAsyncThunk<Post[], number | undefined, { rejectV
 export const addPostAsync = createAsyncThunk<
     Post,
     {
-        photo: string;
+        photo: string; // 👈 просто URL
         title: string;
         location: string;
         coordinates: { latitude: number; longitude: number };
         userId: string;
-
     },
     { rejectValue: string }
 >('posts/addPost', async (postData, {rejectWithValue}) => {
     try {
-        console.log('📝 Початок створення посту:', postData.title);
-
-
-        // 1️⃣ Upload image
-        const photoURL = await uploadImage(postData.photo, postData.userId);
-
-        // 2️⃣ Save post in Firestore
         const docRef = await addDoc(collection(db, 'posts'), {
-            photo: photoURL,
+            photo: postData.photo, // ❗ без upload
             title: postData.title,
             location: postData.location,
             coordinates: postData.coordinates,
@@ -85,21 +76,15 @@ export const addPostAsync = createAsyncThunk<
             userId: postData.userId,
         });
 
-        // 3️⃣ Return serializable post
         return {
             id: docRef.id,
-            photo: photoURL,
-            title: postData.title,
-            location: postData.location,
-            coordinates: postData.coordinates,
+            ...postData,
             comments: 0,
             likes: 0,
-            createdAt: Date.now(), // ❗ number, не Date
-            userId: postData.userId,
+            createdAt: Date.now(),
         };
-    } catch (error: any) {
-        console.error('❌ addPostAsync error:', error);
-        return rejectWithValue(error.message || 'Не вдалося створити пост');
+    } catch (e: any) {
+        return rejectWithValue(e.message || 'Не вдалося створити пост');
     }
 });
 
