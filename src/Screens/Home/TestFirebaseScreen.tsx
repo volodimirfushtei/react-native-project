@@ -112,13 +112,13 @@ const TestFirebaseScreen = () => {
                 <Button title="Вийти" onPress={handleOut}/></View>
 
 
-            {userId && (
+            {userId ? (
                 <Text style={{marginTop: 12, fontSize: 12}}>
                     User: {userId.slice(0, 12)}...
                 </Text>
-            )}
+            ) : null}
 
-            {status && (
+            {status ? (
                 <Text
                     style={{
                         marginTop: 20,
@@ -128,7 +128,7 @@ const TestFirebaseScreen = () => {
                 >
                     {status}
                 </Text>
-            )}
+            ) : null}
         </View>
     );
 };

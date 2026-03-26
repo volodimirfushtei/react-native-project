@@ -30,7 +30,7 @@ export const fetchComments = createAsyncThunk<
         const q = query(
             collection(db, 'comments'),
             where('postId', '==', postId),
-            orderBy('createdAt', 'asc')
+            // orderBy('createdAt', 'asc') // Temporarily disabled
         );
 
         const snap = await getDocs(q);
@@ -122,9 +122,14 @@ const commentsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchComments.fulfilled, (state, action) => {
+                console.log('[commentsSlice] fetchComments.fulfilled. Count:', action.payload.length);
                 state.comments = action.payload;
                 state.commentsByPostId = {};
-                action.payload.forEach(comment => {
+                
+                // Сортуємо на клієнті для надійності (Firestore orderBy пропускає документи без поля!)
+                const sorted = [...action.payload].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                
+                sorted.forEach(comment => {
                     if (!state.commentsByPostId[comment.postId]) {
                         state.commentsByPostId[comment.postId] = [];
                     }

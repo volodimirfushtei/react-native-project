@@ -58,6 +58,7 @@ export default function RegistrationScreen({goToLogin}: Props) {
 
 
     const handleRegister = async () => {
+        console.log('[Registration] handleRegister called with form:', { ...form, password: '***' });
         if (!form.username || !form.email || !form.password) {
             Toast.show({
                 type: "error",
@@ -69,6 +70,7 @@ export default function RegistrationScreen({goToLogin}: Props) {
 
         try {
             // 1️⃣ Викликаємо thunk для реєстрації
+            console.log('[Registration] Dispatching registerDB...');
             const resultAction: any = await dispatch(registerDB({
                 email: form.email,
                 password: form.password,
@@ -77,14 +79,19 @@ export default function RegistrationScreen({goToLogin}: Props) {
 
             if (registerDB.fulfilled.match(resultAction)) {
                 const userId = resultAction.payload.id;
+                console.log('[Registration] registerDB fulfilled. UID:', userId);
 
                 // 2️⃣ Завантажуємо аватар, якщо він вибраний
                 if (form.avatar) {
+                    console.log('[Registration] form.avatar detected. Dispatching uploadAvatar...', form.avatar);
                     await dispatch(uploadAvatar(form.avatar));
+                    console.log('[Registration] uploadAvatar finished');
                 }
 
                 // 3️⃣ Завантажуємо дані користувача у Redux
+                console.log('[Registration] Dispatching loadUserData...');
                 await dispatch(loadUserData(userId));
+                console.log('[Registration] loadUserData finished');
 
                 Toast.show({
                     type: "success",
@@ -92,6 +99,7 @@ export default function RegistrationScreen({goToLogin}: Props) {
                     text2: "Ви успішно зареєструвалися!",
                 });
             } else {
+                console.error('[Registration] registerDB failed:', resultAction.payload);
                 throw new Error(resultAction.payload || 'Не вдалося зареєструватися');
             }
         } catch (error: any) {
@@ -123,7 +131,7 @@ export default function RegistrationScreen({goToLogin}: Props) {
                 >
                     <View style={styles.card}>
                         <View style={styles.avatarWrapper}><UserAvatar
-                            uri={form.avatar || userState.avatarUri || undefined}
+                            uri={form.avatar || userState.avatar || undefined}
                             onAvatarChange={(uri) => handleChange("avatar", uri)}/></View>
 
 

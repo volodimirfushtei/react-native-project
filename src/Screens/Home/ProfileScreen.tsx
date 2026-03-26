@@ -20,10 +20,10 @@ import {Feather} from "@expo/vector-icons";
 import {useSelector} from "react-redux";
 import {selectPosts} from "@/redux/slices/postsSlice";
 
-import {selectAuthUser, uploadAvatar} from "@/redux/slices/userSlice";
+import {selectUserProfile, uploadAvatar} from "@/redux/slices/userSlice";
 import type {RootState} from '@/redux/store';
 import {useAppDispatch} from "@/redux/store";
-import {logoutDB} from "@/redux/slices/authSlice";
+import {logoutDB, selectAuthUser} from "@/redux/slices/authSlice";
 import Toast from 'react-native-toast-message';
 import {auth, db} from '@/lib/firebase';
 import {doc, serverTimestamp, updateDoc} from 'firebase/firestore';
@@ -46,17 +46,23 @@ export default function ProfileScreen() {
     const dispatch = useAppDispatch();
     const posts = useSelector(selectPosts);
 
-    const currentUser = useSelector(selectAuthUser);
+    const userProfile = useSelector(selectUserProfile);
+    // Removed authUser as per instruction to rely on userProfile from userSlice
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const [likedPosts, setLikedPosts] = useState<string[]>([]);
     const userAvatar = useSelector((state: RootState) => state.user.avatar);
-    const user = useSelector(selectAuthUser);
+
+    // Фільтруємо пости, щоб показувати тільки мої
+    const userPosts = posts.filter(post => post.userId === userProfile.id);
+
     // Діагностика даних
-    console.log('Posts data:', posts);
-    console.log('First post photo URL:', posts[0]?.photo);
-    console.log('User avatar:', userAvatar);
-    console.log('User avatar:', user?.avatar);
-    console.log('User:', currentUser);
+    console.log('[ProfileScreen] --- Render ---');
+    console.log('[ProfileScreen] userProfile:', userProfile);
+    console.log('[ProfileScreen] Total posts in Redux:', posts.length);
+    console.log('[ProfileScreen] My posts count:', userPosts.length);
+    if (posts.length > 0) {
+        console.log('[ProfileScreen] Sample post photo URL:', posts[0].photo);
+    }
 
     const handleLogout = async () => {
         const user = auth.currentUser;
@@ -110,12 +116,15 @@ export default function ProfileScreen() {
         }
     };
 
-    const handleCommentsPress = (postId: Post) => {
-        console.log(navigation.getState());
+    const handleCommentsPress = (post: Post) => {
+        console.log('[ProfileScreen] Navigating to Comments for postId:', post.id);
 
         navigation.navigate('Home', {
-            screen: 'CommentsScreen',
-            params: {postId},
+            screen: 'HomeStack',
+            params: {
+                screen: 'CommentsScreen',
+                params: {postId: post.id},
+            },
         });
     };
 
@@ -189,7 +198,7 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
 
                 <View style={styles.avatarContainer}>
-                    <UserAvatar uri={user?.avatar || undefined}
+                    <UserAvatar uri={userProfile?.avatar || undefined}
                                 editable
                                 onAvatarChange={handleAvatarChange}/>
                 </View>
@@ -199,10 +208,10 @@ export default function ProfileScreen() {
                     style={styles.keyboardView}
                 >
                     <View style={styles.card}>
-                        <Text style={styles.name}>{currentUser?.displayName || 'User'}</Text>
+                        <Text style={styles.name}>{userProfile?.displayName || 'User'}</Text>
 
                         <FlatList
-                            data={posts}
+                            data={userPosts}
                             style={styles.flatList}
                             keyExtractor={(item) => item.id}
                             renderItem={renderItem}
@@ -228,7 +237,6 @@ const styles = StyleSheet.create({
     },
     keyboardView: {
         flex: 1,
-        justifyContent: "flex-end",
     },
     bgImage: {
         position: "absolute",
@@ -264,6 +272,7 @@ const styles = StyleSheet.create({
     },
     flatList: {
         marginTop: 33,
+        flex: 1,
     },
     listContent: {
         paddingBottom: 80,

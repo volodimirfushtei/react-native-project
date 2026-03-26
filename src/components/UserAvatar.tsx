@@ -96,7 +96,9 @@ export default function UserAvatar({
 
         // Завантажуємо у Firestore
         try {
-            await dispatch(uploadAvatar(uri)).unwrap();
+            const downloadUrl = await dispatch(uploadAvatar(uri)).unwrap();
+            setAvatar(downloadUrl); // локальний state оновлюємо реальним URL
+            onAvatarChange?.(downloadUrl);
             Toast.show({type: "success", text1: "Аватар оновлено"});
         } catch (error: any) {
             Toast.show({type: "error", text1: "Помилка завантаження", text2: error?.message ?? ""});
@@ -106,13 +108,11 @@ export default function UserAvatar({
     const handleRemoveAvatar = async () => {
         try {
             await dispatch(removeAvatar()).unwrap();
+            setAvatar(null);           // локальний state
+            onAvatarChange?.(null);    // callback батьку
             Toast.show({type: 'info', text1: 'Аватар видалено'});
         } catch (e: any) {
-            Toast.show({
-                type: 'error',
-                text1: 'Помилка',
-                text2: e?.message ?? String(e),
-            });
+            Toast.show({type: 'error', text1: 'Помилка', text2: e?.message ?? String(e)});
         }
     };
 

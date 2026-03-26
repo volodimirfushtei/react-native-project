@@ -2,7 +2,8 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Post} from '@/types/navigation.types';
 import {db} from '@/lib/firebase';
-import {addDoc, collection, serverTimestamp,} from 'firebase/firestore';
+import * as ImageManipulator from 'expo-image-manipulator';
+import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 import type {RootState} from '@/redux/store';
 import {getPosts} from '@/utils/firestore';
 
@@ -65,20 +66,35 @@ export const addPostAsync = createAsyncThunk<
     { rejectValue: string }
 >('posts/addPost', async (postData, {rejectWithValue}) => {
     try {
+        console.log('[addPostAsync] Processing image for Base64 (max 800px):', postData.photo);
+
+        // Resize and compress for Firestore compatibility (1MB limit)
+        const manipulated = await ImageManipulator.manipulateAsync(
+            postData.photo,
+            [{ resize: { width: 800 } }], // Resize width to 800px, height will auto-scale
+            { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+        );
+
+        if (!manipulated.base64) throw new Error("Base64 conversion failed");
+
+        const base64Photo = `data:image/jpeg;base64,${manipulated.base64}`;
+        console.log('[addPostAsync] Base64 created. Length:', base64Photo.length);
+
         const docRef = await addDoc(collection(db, 'posts'), {
-            photo: postData.photo, // ❗ без upload
+            photo: base64Photo,
             title: postData.title,
             location: postData.location,
             coordinates: postData.coordinates,
             comments: 0,
             likes: 0,
-            createdAt: serverTimestamp(),
+            createdAt: Date.now(), // Fixed to use number for consistency with getPosts
             userId: postData.userId,
         });
 
         return {
             id: docRef.id,
             ...postData,
+            photo: base64Photo, // Use the base64 version
             comments: 0,
             likes: 0,
             createdAt: Date.now(),

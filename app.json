@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "Fushtei Volodymyr",
+      "bundleIdentifier": "com.volfush.reactnativeproject",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "App needs access to location when open to show nearby posts.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "App needs access to location when in the background to provide location-based features.",
@@ -22,7 +22,7 @@
       }
     },
     "android": {
-      "package": "Fushtei Volodymyr",
+      "package": "com.volfush.reactnativeproject",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
@@ -45,7 +45,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./src/assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",

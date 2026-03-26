@@ -1,22 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {Provider, useDispatch} from 'react-redux';
-import {store} from '@/redux/store';
+import {Provider} from 'react-redux';
+import {store, useAppDispatch} from '@/redux/store';
 import {NavigationContainer} from '@react-navigation/native';
 import RootNavigator from '@/Navigations/RootNavigator';
 import {auth, db} from '@/lib/firebase';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc} from 'firebase/firestore';
 import {setUserFromFirebase} from '@/redux/slices/authSlice';
+import {loadUserData} from '@/redux/slices/userSlice';
 import SplashScreen from "@/Screens/Splash/SplashScreen"
 
 function AppWrapper() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            console.log('[App] onAuthStateChanged: user is', user ? user.uid : 'null');
             if (user) {
                 // Отримуємо дані користувача з Firestore
                 const userDocRef = doc(db, 'users', user.uid);
@@ -26,16 +28,21 @@ function AppWrapper() {
                     ? userSnap.data()
                     : {id: user.uid, email: user.email || '', name: user.displayName || '', avatar: user.photoURL};
 
+                console.log('[App] Dispatching setUserFromFirebase with:', userData);
                 dispatch(
                     setUserFromFirebase({
-                        id: userData.id,
-                        email: userData.email,
-                        name: userData.name,
-                        avatar: userData.avatar,
+                        id: user.uid,
+                        email: userData.email || user.email || '',
+                        name: userData.name || user.displayName || '',
+                        avatar: userData.avatar || user.photoURL || undefined,
                     })
                 );
+
+                // 🔥 ТАКОЖ завантажуємо в userSlice для профілю
+                dispatch(loadUserData(user.uid));
             } else {
                 dispatch(setUserFromFirebase(null));
+                // Можна також очистити userSlice якщо треба
             }
             setLoading(false);
         });

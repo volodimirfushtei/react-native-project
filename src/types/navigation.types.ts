@@ -5,7 +5,14 @@ export type RootStackParamList = {
     CreatePostScreen: undefined;
     Auth: undefined;
     Home: undefined | {
-        screen: 'PostsScreen' | 'CreatePostScreen' | 'ProfileScreen' | 'CommentsScreen';
+        screen: 'HomeStack' | 'CreatePostScreen' | 'ProfileScreen';
+        params?: {
+            screen?: 'PostsScreen' | 'CommentsScreen' | 'MapScreen' | 'TestFirebaseScreen';
+            params?: any;
+        };
+    };
+    HomeStack: {
+        screen?: 'PostsScreen' | 'CommentsScreen' | 'MapScreen' | 'TestFirebaseScreen';
         params?: any;
     };
     SplashScreen: undefined;
@@ -45,6 +52,7 @@ export interface Post {
     createdAt: number;
     comments: number;
     likes: number;
+    userId: string;
 }
 
 export interface Comment {

@@ -107,7 +107,7 @@ export const getPosts = async (limitCount: number = 20): Promise<Post[]> => {
                 comments: Number(data.comments) || 0,
                 likes: Number(data.likes) || 0,
                 createdAt: parseCreatedAt(data.createdAt), // ✅ number,
-
+                userId: cleanString(data.userId || ''),
             };
 
             console.log(`✅ Очищений пост ${doc.id}:`, {

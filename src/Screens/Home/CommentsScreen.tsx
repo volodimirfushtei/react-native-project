@@ -43,6 +43,11 @@ export default function CommentsScreen() {
     const currentPost = posts.find(post => post.id === postId);
     const dispatch = useAppDispatch();
 
+    console.log('[CommentsScreen] Render with postId:', postId);
+    console.log('[CommentsScreen] Current user ID:', currentUser?.id);
+    console.log('[CommentsScreen] Comments count for this post:', (comments || []).length);
+    console.log('[CommentsScreen] Comments authors:', (comments || []).map(c => c.userName));
+
     useFocusEffect(
         useCallback(() => {
             dispatch(fetchComments({postId}));
@@ -123,7 +128,7 @@ export default function CommentsScreen() {
 
 
     const renderComment = ({item}: { item: Comment }) => {
-        const isOwnComment = item.userName === "Natali Romanova";
+        const isOwnComment = item.userId === currentUser?.id;
         const isLiked = likedComments.includes(item.id);
         return (
             <View style={[
