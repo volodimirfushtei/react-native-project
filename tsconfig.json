@@ -3,6 +3,8 @@
   "compilerOptions": {
     "jsx": "react-native",
     "strict": true,
+    "module": "ESNext",
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
