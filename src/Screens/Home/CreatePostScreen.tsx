@@ -540,6 +540,7 @@ const styles = StyleSheet.create({
     },
     header: {
         height: 88,
+        
         borderBottomWidth: 1,
         borderBottomColor: "#E8E8E8",
         flexDirection: "row",
@@ -550,11 +551,14 @@ const styles = StyleSheet.create({
     backButton: {
         position: "absolute",
         left: 16,
-        bottom: 10,
+       bottom: 10,    
     },
     headerTitle: {
+        position: "absolute",
+       bottom: 11,
         fontSize: 17,
         fontWeight: "500",
+        lineHeight: 22,
         color: "#212121",
         textAlign: "center",
     },

@@ -223,8 +223,9 @@ const styles = StyleSheet.create({
     profileCard: {
         flexDirection: "row",
         alignItems: "center",
-        padding: 16,
-        marginTop: 16,
+        paddingHorizontal: 16,
+        marginTop: 32,
+        marginBottom: 32,
     },
     profileImage: {
         width: 60,
